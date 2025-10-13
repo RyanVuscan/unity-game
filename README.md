@@ -10,6 +10,9 @@ Elemental Arena is a fast paced top-down 2D shooter where players must use 3 ele
 - To win players must survive 3 total rounds, each of which are timed
 - Players lose when their HP is depleted completely or do not finish the round in time
 
+## Short Gameplay Video
+https://youtu.be/jWxbvj577ts
+
 ## Game Type
 Survival, Bullet-hell shooter
 
