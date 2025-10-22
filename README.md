@@ -88,8 +88,7 @@ Fire is weak against water, and strong against nature)
 - L to shoot
 
 ## Project Setup aligned to course topics
-- Built in Unity (2021.3+ or latest stable)
+- Built in Unity 6.2
 - C# Scripts for PlayerController, EnemyAI, Projectile, ElementManager, LevelManager, BossController
 - Uses 2D physics and collision layers for interaction
 - Organized hierarchy (Player, Enemies, Projectiles, UI, Environment)
-- GitHub Classroom repository with clear commits, branches, and tags# Elemental Arena
