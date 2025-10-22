@@ -10,8 +10,8 @@ Elemental Arena is a fast paced top-down 2D shooter where players must use 3 ele
 - To win players must survive 3 total rounds, each of which are timed
 - Players lose when their HP is depleted completely or do not finish the round in time
 
-## Short Gameplay Video
-https://youtu.be/jWxbvj577ts
+## Short Gameplay Video (Reupload)
+https://youtu.be/yCiTxO5aCGs
 
 ## Game Type
 Survival, Bullet-hell shooter
@@ -40,11 +40,26 @@ Survival, Bullet-hell shooter
 - Level geometry includes obstacles with collision detection for cover mechanics
 - Layer-based collision (Player, Enemy, Projectile, Obstacle) configured in physics settings
 
-## FSM Scope
-- Finite State Machines implemented for enemies and boss
-- Basic FSM: Patrol → Chase → Attack → Reset
-- Elemental FSM: Idle → Detect Element → Select Attack → Cooldown
-- Transitions handled via Unity Events
+## FSM Scope (Updated for Assignment 2)
+- Finite State Machines will be implemented for enemies and a boss. Currently implemented a basic FSM for non boss enemies known as ElementalEnemy
+
+## States
+- IdleState:
+    - Enemy waits passively.
+    - Checks distance to the player.
+    - **Transition:** to **ChaseState** when the player enters `detectionRange`.
+
+- ChaseState
+    - Enemy moves towards the player.
+    - Rotates to face the player.
+    - **Transition:**  
+        - to **AttackState** when player is within `attackRange`.  
+        - (Optional) to **IdleState** if the player moves too far away.
+
+- AttackState
+    - Fires projectiles every set amount of seconds.
+    - Continues to track and face player
+    - **Transition:** to **ChaseState** when the player leaves `attackRange`.
 
 ## Environment
 - Pixel-art style
