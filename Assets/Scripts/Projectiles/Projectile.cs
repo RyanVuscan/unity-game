@@ -12,16 +12,16 @@ public class Projectile : MonoBehaviour
 public ElementType Element { get; private set; }
 GameObject owner;
 float spawnTime;
-Rigidbody2D rb;
+Rigidbody rb;
 
 
-void Awake() { rb = GetComponent<Rigidbody2D>(); }
+void Awake() { rb = GetComponent<Rigidbody>(); }
 
 
 public void Init(GameObject owner, ElementType elementType)
 {
 this.owner = owner; Element = elementType; spawnTime = Time.time;
-rb.linearVelocity = transform.up * speed;
+rb.linearVelocity = transform.forward * speed;
 }
 
 
@@ -31,10 +31,8 @@ if (Time.time - spawnTime >= lifetime) Destroy(gameObject);
 }
 
 
-void OnTriggerEnter2D(Collider2D other)
+void OnTriggerEnter(Collider other)
 {
-    Debug.Log($"Projectile hit {other.name} on layer {LayerMask.LayerToName(other.gameObject.layer)}");
-
     if (other.attachedRigidbody && other.attachedRigidbody.gameObject == owner)
         return;
 
@@ -43,8 +41,15 @@ void OnTriggerEnter2D(Collider2D other)
 
     if (other.TryGetComponent(out Health hp))
     {
-        Debug.Log($"Damaging {other.name}");
-        hp.TakeDamage(baseDamage);
+        float damage = baseDamage;
+        
+        // Check for elemental weakness/strength
+        if (other.TryGetComponent(out ElementalAffinity affinity))
+        {
+            damage *= ElementRules.DamageMultiplier(Element, affinity.Element);
+        }
+        
+        hp.TakeDamage(damage);
     }
 
     Destroy(gameObject);

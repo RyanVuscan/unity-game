@@ -1,10 +1,11 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class ChaseState : State
 {
     Transform player;
     float moveSpeed, attackRange;
-    Rigidbody2D rb;
+    NavMeshAgent agent;
 
     public ChaseState(GameObject owner, StateMachine fsm, Transform player, float moveSpeed, float attackRange)
         : base(owner, fsm)
@@ -12,22 +13,57 @@ public class ChaseState : State
         this.player = player;
         this.moveSpeed = moveSpeed;
         this.attackRange = attackRange;
-        rb = owner.GetComponent<Rigidbody2D>();
+        agent = owner.GetComponent<NavMeshAgent>();
+    }
+
+    public override void Enter()
+    {
+        if (agent != null)
+        {
+            agent.isStopped = false;
+            agent.speed = moveSpeed;
+        }
     }
 
     public override void Update()
     {
-        if (player == null) return;
+        if (player == null || agent == null) return;
 
-        Vector2 dir = (player.position - owner.transform.position).normalized;
-        rb.linearVelocity = dir * moveSpeed;
-        owner.transform.up = dir;
+        float dist = Vector3.Distance(owner.transform.position, player.position);
+        
+        // Player got too far away, go back to what we were doing
+        if (dist > moveSpeed * 3f)
+        {
+            var ai = owner.GetComponent<ElementalEnemyAI>();
+            
+            if (ai != null && ai.UsePatrol && ai.Waypoints != null && ai.Waypoints.Length > 0)
+            {
+                fsm.ChangeState(new PatrolState(owner, fsm, player, ai.Waypoints, ai.MoveSpeed, ai.DetectionRange));
+            }
+            else
+            {
+                fsm.ChangeState(new IdleState(owner, fsm, player, moveSpeed, moveSpeed * 2f));
+            }
+            return;
+        }
 
-        float dist = Vector2.Distance(owner.transform.position, player.position);
+        // Follow the player using navmesh
+        agent.SetDestination(player.position);
+
+        if (agent.velocity.sqrMagnitude > 0.1f)
+            owner.transform.forward = agent.velocity.normalized;
+
+        // Switch to attack if close enough
         if (dist <= attackRange)
-            fsm.ChangeState(new AttackState(owner, fsm, player, 
-                owner.GetComponent<ElementalEnemyAI>().FirePoint,
-                owner.GetComponent<ElementalEnemyAI>().ProjectilePrefab,
-                owner.GetComponent<ElementalEnemyAI>().FireInterval));
+        {
+            var ai = owner.GetComponent<ElementalEnemyAI>();
+            fsm.ChangeState(new AttackState(owner, fsm, player, ai.FirePoint, ai.ProjectilePrefab, ai.FireInterval, ai.AttackRange));
+        }
+    }
+
+    public override void Exit()
+    {
+        if (agent != null)
+            agent.isStopped = true;
     }
 }

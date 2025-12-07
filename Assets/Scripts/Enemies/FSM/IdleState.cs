@@ -1,10 +1,11 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class IdleState : State
 {
     Transform player;
     float speed, detectionRange;
-    Rigidbody2D rb;
+    NavMeshAgent agent;
 
     public IdleState(GameObject owner, StateMachine fsm, Transform player, float speed, float detectionRange)
         : base(owner, fsm)
@@ -12,14 +13,20 @@ public class IdleState : State
         this.player = player;
         this.speed = speed;
         this.detectionRange = detectionRange;
-        rb = owner.GetComponent<Rigidbody2D>();
+        agent = owner.GetComponent<NavMeshAgent>();
+    }
+
+    public override void Enter()
+    {
+        if (agent != null)
+            agent.isStopped = true;
     }
 
     public override void Update()
     {
         if (player == null) return;
 
-        float dist = Vector2.Distance(owner.transform.position, player.position);
+        float dist = Vector3.Distance(owner.transform.position, player.position);
         if (dist < detectionRange)
             fsm.ChangeState(new ChaseState(owner, fsm, player, speed, detectionRange));
     }

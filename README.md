@@ -1,7 +1,13 @@
 # Elemental Arena
 
+## A3 Pathmaking showcase
+https://youtu.be/1hjA17Izytc
+
+## A4 Networking showcase
+https://youtu.be/lkS-whvPp0A
+
 ## Overview
-Elemental Arena is a fast paced top-down 2D shooter where players must use 3 elements (grass, fire, water) to eliminate all enemies off the board.
+Elemental Arena is a fast paced top-down 3D shooter where players must use fight elemental enemies.
 
 ## Core Gameplay
 - Players must move their controllable character around to dodge incoming attacks
@@ -18,7 +24,7 @@ Survival, Bullet-hell shooter
 
 ## Player Setup
 - Single player as the main controllable character
-- Optional local co-op where swapping elements also swaps players
+- Optional local co-op
 
 ## AI Design
 ### Basic enemy
@@ -92,3 +98,6 @@ Fire is weak against water, and strong against nature)
 - C# Scripts for PlayerController, EnemyAI, Projectile, ElementManager, LevelManager, BossController
 - Uses 2D physics and collision layers for interaction
 - Organized hierarchy (Player, Enemies, Projectiles, UI, Environment)
+
+## AI Disclaimer
+AI (GPT 4.0) was used for some parts of the assignment, primarily in assistance with some of the networking scripts
